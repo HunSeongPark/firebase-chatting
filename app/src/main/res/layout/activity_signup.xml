@@ -6,6 +6,12 @@
     android:paddingHorizontal="40dp"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="100dp"
+        android:src="@drawable/ic_baseline_person_24"
+        android:id="@+id/profile_iv"
+        android:layout_marginBottom="20dp"
+        android:layout_height="100dp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

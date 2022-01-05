@@ -1,19 +1,24 @@
 package com.hunseong.chatting
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.hunseong.chatting.databinding.ActivitySignupBinding
 import com.hunseong.chatting.model.User
 
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
+
+    private var selectedUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +40,41 @@ class SignupActivity : AppCompatActivity() {
 
             Firebase.auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
-                    val user = User(name)
                     val uid = it.result.user?.uid ?: return@addOnCompleteListener
-                    Firebase.database.reference.child("Users").child(uid).setValue(user)
-                }
+                    if (selectedUri != null) {
+                        Firebase.storage.reference.child("Users/profileImages").child(uid)
+                            .putFile(selectedUri!!)
+                            .addOnSuccessListener {
+                                Firebase.storage.reference.child("Users/profileImages").child(uid)
+                                    .downloadUrl.addOnSuccessListener { uri ->
+                                        val url = uri.toString()
+                                        val user = User(name, url)
+                                        Firebase.database.reference.child("Users").child(uid)
+                                            .setValue(user)
+                                    }
+                            }
+                    } else {
+                        val user = User(name, "")
+                        Firebase.database.reference.child("Users").child(uid)
+                            .setValue(user)
+                    }
 
+                }
+        }
+
+        profileIv.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK).apply {
+                type = MediaStore.Images.Media.CONTENT_TYPE
+            }
+            startActivityForResult(intent, 1000)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+            selectedUri = data?.data
+            binding.profileIv.setImageURI(selectedUri)
         }
     }
 }
