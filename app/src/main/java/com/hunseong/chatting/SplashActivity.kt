@@ -1,7 +1,9 @@
 package com.hunseong.chatting
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.ktx.Firebase
@@ -49,6 +51,12 @@ class SplashActivity : AppCompatActivity() {
                 }
                 .create()
                 .show()
+        } else {
+            Handler().postDelayed({
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 2000)
         }
     }
 }
