@@ -7,9 +7,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.hunseong.chatting.databinding.ActivitySignupBinding
 import com.hunseong.chatting.model.User
@@ -19,6 +22,18 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
 
     private var selectedUri: Uri? = null
+
+    private val auth: FirebaseAuth by lazy {
+        Firebase.auth
+    }
+
+    private val storage: FirebaseStorage by lazy {
+        Firebase.storage
+    }
+
+    private val db: DatabaseReference by lazy {
+        Firebase.database.reference
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,25 +53,27 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Firebase.auth.createUserWithEmailAndPassword(email, password)
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     val uid = it.result.user?.uid ?: return@addOnCompleteListener
                     if (selectedUri != null) {
-                        Firebase.storage.reference.child("Users/profileImages").child(uid)
+                        storage.reference.child("Users/profileImages").child(uid)
                             .putFile(selectedUri!!)
                             .addOnSuccessListener {
-                                Firebase.storage.reference.child("Users/profileImages").child(uid)
+                                storage.reference.child("Users/profileImages").child(uid)
                                     .downloadUrl.addOnSuccessListener { uri ->
                                         val url = uri.toString()
                                         val user = User(name, url)
-                                        Firebase.database.reference.child("Users").child(uid)
+                                        db.child("Users").child(uid)
                                             .setValue(user)
+                                        finish()
                                     }
                             }
                     } else {
                         val user = User(name, "")
-                        Firebase.database.reference.child("Users").child(uid)
+                        db.child("Users").child(uid)
                             .setValue(user)
+                        finish()
                     }
 
                 }
