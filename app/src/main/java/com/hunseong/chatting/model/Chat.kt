@@ -1,6 +1,6 @@
 package com.hunseong.chatting.model
 
 data class Chat(
-    val uid: String = "",
-    val destUid: String = "",
+    val users: Map<String, Boolean> = emptyMap(),
+    val comments: Map<String, Comment> = emptyMap()
 )

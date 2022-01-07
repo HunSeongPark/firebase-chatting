@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -32,6 +34,10 @@ class PeopleFragment : Fragment() {
         Firebase.database.reference
     }
 
+    private val auth: FirebaseAuth by lazy {
+        Firebase.auth
+    }
+
     private val users = mutableListOf<User>()
 
     private val listener = object : ValueEventListener {
@@ -39,6 +45,7 @@ class PeopleFragment : Fragment() {
             users.clear()
             for (data in snapshot.children) {
                 val user = data.getValue(User::class.java) ?: continue
+                if (user.uid == auth.currentUser?.uid) continue
                 users.add(user)
             }
             peopleAdapter.submitList(users)
