@@ -23,7 +23,7 @@
         <activity android:name=".ui.MainActivity"/>
         <activity android:name=".ui.login.LoginActivity"/>
         <activity android:name=".ui.login.SignupActivity"/>
-        <activity android:name=".ui.chat.MessageActivity"
+        <activity android:name=".ui.chatroom.MessageActivity"
             android:windowSoftInputMode="adjustResize"/>
     </application>
 

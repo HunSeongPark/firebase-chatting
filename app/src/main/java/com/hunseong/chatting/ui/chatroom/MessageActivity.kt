@@ -1,8 +1,6 @@
-package com.hunseong.chatting.ui.chat
+package com.hunseong.chatting.ui.chatroom
 
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -11,7 +9,6 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.hunseong.chatting.databinding.ActivityMessageBinding
-import com.hunseong.chatting.extension.hideKeyboard
 import com.hunseong.chatting.model.Chat
 import com.hunseong.chatting.model.Comment
 import com.hunseong.chatting.model.User

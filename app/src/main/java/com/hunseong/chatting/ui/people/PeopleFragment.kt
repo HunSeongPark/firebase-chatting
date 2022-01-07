@@ -11,7 +11,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.hunseong.chatting.ui.chat.MessageActivity
+import com.hunseong.chatting.ui.chatroom.MessageActivity
 import com.hunseong.chatting.databinding.FragmentPeopleBinding
 import com.hunseong.chatting.model.User
 import com.hunseong.chatting.util.FirebaseKey.USER_KEY

@@ -1,4 +1,4 @@
-package com.hunseong.chatting.ui.chat
+package com.hunseong.chatting.ui.chatroom
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
