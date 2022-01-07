@@ -16,6 +16,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.hunseong.chatting.databinding.ActivitySignupBinding
 import com.hunseong.chatting.model.User
+import com.hunseong.chatting.util.FirebaseKey.PROFILE_PATH
+import com.hunseong.chatting.util.FirebaseKey.USER_KEY
 
 class SignupActivity : AppCompatActivity() {
 
@@ -44,8 +46,8 @@ class SignupActivity : AppCompatActivity() {
 
     private fun initViews() = with(binding) {
         signupBtn.setOnClickListener {
-            val email = emailEt.text.toString()
-            val password = passwordEt.text.toString()
+            val email = emailEt.text.toString().trim()
+            val password = passwordEt.text.toString().trim()
             val name = nameEt.text.toString()
 
             if (email.isBlank() || password.isBlank() || name.isBlank()) {
@@ -57,21 +59,21 @@ class SignupActivity : AppCompatActivity() {
                 .addOnCompleteListener {
                     val uid = it.result.user?.uid ?: return@addOnCompleteListener
                     if (selectedUri != null) {
-                        storage.reference.child("Users/profileImages").child(uid)
+                        storage.reference.child(PROFILE_PATH).child(uid)
                             .putFile(selectedUri!!)
                             .addOnSuccessListener {
-                                storage.reference.child("Users/profileImages").child(uid)
+                                storage.reference.child(PROFILE_PATH).child(uid)
                                     .downloadUrl.addOnSuccessListener { uri ->
                                         val url = uri.toString()
-                                        val user = User(name, url)
-                                        db.child("Users").child(uid)
+                                        val user = User(name, url, uid)
+                                        db.child(USER_KEY).child(uid)
                                             .setValue(user)
                                         finish()
                                     }
                             }
                     } else {
                         val user = User(name, "")
-                        db.child("Users").child(uid)
+                        db.child(USER_KEY).child(uid)
                             .setValue(user)
                         finish()
                     }

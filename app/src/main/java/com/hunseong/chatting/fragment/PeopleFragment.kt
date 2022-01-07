@@ -14,15 +14,17 @@ import com.hunseong.chatting.MessageActivity
 import com.hunseong.chatting.adapter.PeopleAdapter
 import com.hunseong.chatting.databinding.FragmentPeopleBinding
 import com.hunseong.chatting.model.User
+import com.hunseong.chatting.util.FirebaseKey.USER_KEY
 
 class PeopleFragment : Fragment() {
     private lateinit var binding: FragmentPeopleBinding
 
     private val peopleAdapter: PeopleAdapter by lazy {
         PeopleAdapter { user ->
-            val intent = Intent(requireContext(), MessageActivity::class.java)
+            val intent = Intent(requireContext(), MessageActivity::class.java).apply {
+                putExtra(EXTRA_DEST_UID, user.uid)
+            }
             startActivity(intent)
-            Log.e("onClick", "$user")
         }
     }
 
@@ -64,11 +66,15 @@ class PeopleFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        db.child("Users").addValueEventListener(listener)
+        db.child(USER_KEY).addValueEventListener(listener)
     }
 
     override fun onStop() {
         super.onStop()
-        db.child("Users").removeEventListener(listener)
+        db.child(USER_KEY).removeEventListener(listener)
+    }
+
+    companion object {
+        const val EXTRA_DEST_UID = "extra_dest__uid"
     }
 }

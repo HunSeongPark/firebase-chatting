@@ -9,4 +9,5 @@
     <string name="people">People</string>
     <string name="chat">Chat</string>
     <string name="account">Account</string>
+    <string name="send">전송</string>
 </resources>
