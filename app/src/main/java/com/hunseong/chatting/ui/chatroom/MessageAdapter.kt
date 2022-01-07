@@ -11,6 +11,7 @@ import com.hunseong.chatting.databinding.ItemMyMessageBinding
 import com.hunseong.chatting.databinding.ItemOtherMessageBinding
 import com.hunseong.chatting.model.Comment
 import com.hunseong.chatting.model.User
+import java.text.SimpleDateFormat
 
 class MessageAdapter(private val otherUser: User) :
     ListAdapter<Comment, RecyclerView.ViewHolder>(diffUtil) {
@@ -20,6 +21,9 @@ class MessageAdapter(private val otherUser: User) :
 
         fun bind(comment: Comment) {
             binding.messageTv.text = comment.message
+
+            val dateFormat = SimpleDateFormat("HH:mm")
+            binding.timeTv.text = dateFormat.format(comment.time)
         }
     }
 
@@ -29,6 +33,9 @@ class MessageAdapter(private val otherUser: User) :
         fun bind(comment: Comment) {
             binding.messageTv.text = comment.message
             binding.messageNameTv.text = otherUser.userName
+
+            val dateFormat = SimpleDateFormat("HH:mm")
+            binding.timeTv.text = dateFormat.format(comment.time)
 
             if (otherUser.profileUrl.isNotBlank()) {
                 Glide.with(binding.messageProfileIv)

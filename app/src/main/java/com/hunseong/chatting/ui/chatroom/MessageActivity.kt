@@ -101,11 +101,12 @@ class MessageActivity : AppCompatActivity() {
                 }
             } else {
                 val message = messageEt.text.toString()
+                val time = System.currentTimeMillis()
                 if (message.isBlank()) {
                     Toast.makeText(this@MessageActivity, "메세지를 입력하세요.", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                val comment = Comment(uid!!, message)
+                val comment = Comment(uid!!, message, time)
                 db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY).push()
                     .setValue(comment)
                 messageEt.setText("")

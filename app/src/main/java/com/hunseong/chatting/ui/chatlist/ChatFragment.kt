@@ -1,5 +1,6 @@
 package com.hunseong.chatting.ui.chatlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import com.hunseong.chatting.databinding.FragmentChatBinding
 import com.hunseong.chatting.model.Chat
 import com.hunseong.chatting.model.ChatRoom
 import com.hunseong.chatting.model.User
+import com.hunseong.chatting.ui.chatroom.MessageActivity
+import com.hunseong.chatting.ui.people.PeopleFragment
 import com.hunseong.chatting.util.FirebaseKey.CHAT_ROOM_KEY
 import com.hunseong.chatting.util.FirebaseKey.USER_KEY
 
@@ -25,7 +28,12 @@ class ChatFragment : Fragment() {
     private lateinit var binding: FragmentChatBinding
     private lateinit var uid: String
     private val chatListAdapter: ChatListAdapter by lazy {
-        ChatListAdapter()
+        ChatListAdapter { uid ->
+            val intent = Intent(requireContext(), MessageActivity::class.java).apply {
+                putExtra(PeopleFragment.EXTRA_DEST_UID, uid)
+            }
+            startActivity(intent)
+        }
     }
 
     private val auth: FirebaseAuth by lazy {

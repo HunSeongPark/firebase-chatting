@@ -6,12 +6,28 @@
     android:gravity="end|center_vertical"
     android:layout_height="75dp">
 
-    <TextView
-        android:background="@drawable/right_bubble"
-        android:id="@+id/message_tv"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        tools:text="Hihi"/>
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <TextView
+            android:layout_gravity="bottom"
+            android:id="@+id/time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="08:31" />
+
+        <TextView
+            android:background="@drawable/right_bubble"
+            android:id="@+id/message_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            tools:text="Hihi"/>
+
+    </LinearLayout>
 
 </LinearLayout>
