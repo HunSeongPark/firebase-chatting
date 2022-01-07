@@ -1,6 +1,8 @@
 package com.hunseong.chatting.ui.chat
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -9,17 +11,20 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.hunseong.chatting.databinding.ActivityMessageBinding
+import com.hunseong.chatting.extension.hideKeyboard
 import com.hunseong.chatting.model.Chat
 import com.hunseong.chatting.model.Comment
+import com.hunseong.chatting.model.User
 import com.hunseong.chatting.ui.people.PeopleFragment.Companion.EXTRA_DEST_UID
 import com.hunseong.chatting.util.FirebaseKey.CHAT_ROOM_KEY
 import com.hunseong.chatting.util.FirebaseKey.COMMENTS_KEY
+import com.hunseong.chatting.util.FirebaseKey.USER_KEY
 
 class MessageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMessageBinding
 
-    private var destUid: String? = null // 자신의 UID
-    private var uid: String? = null // 상대방 UID
+    private var destUid: String? = null // 상대방 uid
+    private var uid: String? = null // 자신의 uid
     private var chatRoomUid: String? = null
 
     private val auth: FirebaseAuth by lazy {
@@ -37,6 +42,7 @@ class MessageActivity : AppCompatActivity() {
             comments.add(snapshot.getValue(Comment::class.java)!!)
             messageAdapter.submitList(comments)
             messageAdapter.notifyItemChanged(comments.lastIndex)
+            binding.recyclerView.layoutManager!!.scrollToPosition(comments.lastIndex)
         }
 
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -48,9 +54,24 @@ class MessageActivity : AppCompatActivity() {
         override fun onCancelled(error: DatabaseError) {}
 
     }
-    private val messageAdapter: MessageAdapter by lazy {
-        MessageAdapter()
+
+    private val userListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            for (data in snapshot.children) {
+                val user = data.getValue(User::class.java) ?: continue
+                if (user.uid == destUid) {
+                    messageAdapter = MessageAdapter(user)
+                    binding.recyclerView.adapter = messageAdapter
+                    break
+                }
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {}
+
     }
+
+    private lateinit var messageAdapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +90,7 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
-        recyclerView.adapter = messageAdapter
+        db.child(USER_KEY).addListenerForSingleValueEvent(userListener)
         sendBtn.setOnClickListener {
             val users = mutableMapOf<String, Boolean>()
             users[uid!!] = true
@@ -90,6 +111,15 @@ class MessageActivity : AppCompatActivity() {
                 val comment = Comment(uid!!, message)
                 db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY).push()
                     .setValue(comment)
+                messageEt.setText("")
+            }
+        }
+        
+        recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+            if (bottom < oldBottom) {
+                recyclerView.postDelayed({
+                    recyclerView.layoutManager!!.scrollToPosition(comments.lastIndex)
+                }, 100)
             }
         }
     }
@@ -110,5 +140,10 @@ class MessageActivity : AppCompatActivity() {
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY).removeEventListener(listener)
     }
 }
