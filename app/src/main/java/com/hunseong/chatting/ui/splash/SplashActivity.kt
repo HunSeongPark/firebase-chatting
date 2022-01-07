@@ -1,4 +1,4 @@
-package com.hunseong.chatting
+package com.hunseong.chatting.ui.splash
 
 import android.content.Intent
 import android.graphics.Color
@@ -10,6 +10,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.hunseong.chatting.ui.login.LoginActivity
+import com.hunseong.chatting.R
 import com.hunseong.chatting.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

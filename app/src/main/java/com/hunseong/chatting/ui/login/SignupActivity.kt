@@ -1,4 +1,4 @@
-package com.hunseong.chatting
+package com.hunseong.chatting.ui.login
 
 import android.app.Activity
 import android.content.Intent

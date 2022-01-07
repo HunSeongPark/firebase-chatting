@@ -1,8 +1,7 @@
-package com.hunseong.chatting.fragment
+package com.hunseong.chatting.ui.people
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.hunseong.chatting.MessageActivity
-import com.hunseong.chatting.adapter.PeopleAdapter
+import com.hunseong.chatting.ui.chat.MessageActivity
 import com.hunseong.chatting.databinding.FragmentPeopleBinding
 import com.hunseong.chatting.model.User
 import com.hunseong.chatting.util.FirebaseKey.USER_KEY

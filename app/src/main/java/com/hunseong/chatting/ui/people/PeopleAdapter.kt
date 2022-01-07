@@ -1,4 +1,4 @@
-package com.hunseong.chatting.adapter
+package com.hunseong.chatting.ui.people
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +11,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.hunseong.chatting.databinding.ItemFriendBinding
 import com.hunseong.chatting.model.User
 
-class PeopleAdapter(private val onClick: (User) -> Unit) : ListAdapter<User, PeopleAdapter.ViewHolder>(diffUtil) {
+class PeopleAdapter(private val onClick: (User) -> Unit) : ListAdapter<User, PeopleAdapter.ViewHolder>(
+    diffUtil) {
 
     inner class ViewHolder(private val binding: ItemFriendBinding) : RecyclerView.ViewHolder(binding.root) {
         init {

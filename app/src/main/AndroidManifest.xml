@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Chatting">
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,10 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".SignupActivity"/>
-        <activity android:name=".MessageActivity"/>
+        <activity android:name=".ui.MainActivity"/>
+        <activity android:name=".ui.login.LoginActivity"/>
+        <activity android:name=".ui.login.SignupActivity"/>
+        <activity android:name=".ui.chat.MessageActivity"/>
     </application>
 
 </manifest>

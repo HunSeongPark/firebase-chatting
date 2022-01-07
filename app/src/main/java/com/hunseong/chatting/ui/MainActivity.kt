@@ -1,8 +1,9 @@
-package com.hunseong.chatting
+package com.hunseong.chatting.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.hunseong.chatting.fragment.PeopleFragment
+import com.hunseong.chatting.R
+import com.hunseong.chatting.ui.people.PeopleFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

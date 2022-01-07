@@ -1,20 +1,17 @@
-package com.hunseong.chatting
+package com.hunseong.chatting.ui.chat
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.hunseong.chatting.databinding.ActivityMessageBinding
-import com.hunseong.chatting.fragment.PeopleFragment.Companion.EXTRA_DEST_UID
 import com.hunseong.chatting.model.Chat
 import com.hunseong.chatting.model.Comment
+import com.hunseong.chatting.ui.people.PeopleFragment.Companion.EXTRA_DEST_UID
 import com.hunseong.chatting.util.FirebaseKey.CHAT_ROOM_KEY
 import com.hunseong.chatting.util.FirebaseKey.COMMENTS_KEY
 
@@ -31,6 +28,28 @@ class MessageActivity : AppCompatActivity() {
 
     private val db: DatabaseReference by lazy {
         Firebase.database.reference
+    }
+
+    private val comments = mutableListOf<Comment>()
+    private val listener = object : ChildEventListener {
+
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            comments.add(snapshot.getValue(Comment::class.java)!!)
+            messageAdapter.submitList(comments)
+            messageAdapter.notifyItemChanged(comments.lastIndex)
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {}
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+        override fun onCancelled(error: DatabaseError) {}
+
+    }
+    private val messageAdapter: MessageAdapter by lazy {
+        MessageAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +69,7 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
+        recyclerView.adapter = messageAdapter
         sendBtn.setOnClickListener {
             val users = mutableMapOf<String, Boolean>()
             users[uid!!] = true
@@ -61,15 +81,16 @@ class MessageActivity : AppCompatActivity() {
                 db.child(CHAT_ROOM_KEY).push().setValue(chat).addOnSuccessListener {
                     checkChatRoom()
                 }
+            } else {
+                val message = messageEt.text.toString()
+                if (message.isBlank()) {
+                    Toast.makeText(this@MessageActivity, "메세지를 입력하세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val comment = Comment(uid!!, message)
+                db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY).push()
+                    .setValue(comment)
             }
-            val message = messageEt.text.toString()
-            if (message.isBlank()) {
-                Toast.makeText(this@MessageActivity, "메세지를 입력하세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            val comment = Comment(uid!!, message)
-            db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY).push()
-                .setValue(comment)
         }
     }
 
@@ -82,12 +103,12 @@ class MessageActivity : AppCompatActivity() {
                         if (chat.users.containsKey(destUid)) {
                             chatRoomUid = data.key
                             binding.sendBtn.isEnabled = true
+                            db.child(CHAT_ROOM_KEY).child(chatRoomUid!!).child(COMMENTS_KEY)
+                                .addChildEventListener(listener)
                         }
                     }
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
-
             })
     }
 }

@@ -1,4 +1,4 @@
-package com.hunseong.chatting
+package com.hunseong.chatting.ui.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.hunseong.chatting.ui.MainActivity
 import com.hunseong.chatting.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
